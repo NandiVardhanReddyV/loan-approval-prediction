@@ -21,4 +21,10 @@ A full-stack machine learning application that predicts loan approval status bas
 cd backend
 python manage.py runserver
 
+<<<<<<< HEAD
+=======
+## Model Files
+The trained ML model files (`.pkl`) are not committed to GitHub.
+They must be placed in the backend root before running the server.
+>>>>>>> f1de32c (deploy *.pkl files to render)
 
