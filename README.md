@@ -24,7 +24,12 @@ python manage.py runserver
 <<<<<<< HEAD
 =======
 ## Model Files
-The trained ML model files (`.pkl`) are not committed to GitHub.
-They must be placed in the backend root before running the server.
->>>>>>> f1de32c (deploy *.pkl files to render)
+
+The trained machine learning model files (`.pkl`) are intentionally not committed to GitHub 
+to keep the repository lightweight and maintainable.
+
+Before running the backend server, place the following files in the backend root directory:
+- `loan_model.pkl`
+- `scaler.pkl`
+- `columns.pkl`
 
