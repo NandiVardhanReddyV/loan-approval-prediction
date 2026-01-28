@@ -1,4 +1,5 @@
 import { useState } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [formData, setFormData] = useState({
@@ -53,7 +54,7 @@ function App() {
   setResult(null);
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/predict/", {
+    const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
@@ -72,7 +73,7 @@ function App() {
 
     setResult(data);
   } catch {
-    setApiError("Server not reachable. Is Django running?");
+    setApiError("Server not reachable. Please try again later.");
   }
 };
 
