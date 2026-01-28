@@ -8,8 +8,7 @@ __pycache__/
 db.sqlite3
 .env
 
-# ML
-*.pkl
+
 
 # Node / React
 node_modules/
