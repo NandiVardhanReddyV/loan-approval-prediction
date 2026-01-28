@@ -21,7 +21,4 @@ A full-stack machine learning application that predicts loan approval status bas
 cd backend
 python manage.py runserver
 
-### Frontend
-```bash
-cd frontend
-npm run dev
+
