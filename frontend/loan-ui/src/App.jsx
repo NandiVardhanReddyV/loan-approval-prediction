@@ -22,6 +22,7 @@ function App() {
   });
 
   const [result, setResult] = useState(null);
+  const [apiError, setApiError] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -48,82 +49,182 @@ function App() {
   };
 
   const predictLoan = async () => {
+  setApiError("");
+  setResult(null);
+
+  try {
     const response = await fetch("http://127.0.0.1:8000/api/predict/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     });
 
     const data = await response.json();
+
+    if (!response.ok) {
+      setApiError(
+        data.errors
+          ? Object.values(data.errors).join(" ")
+          : data.error
+      );
+      return;
+    }
+
     setResult(data);
-  };
+  } catch {
+    setApiError("Server not reachable. Is Django running?");
+  }
+};
+
 
   return (
-    <div style={{ padding: "40px", fontFamily: "Arial", maxWidth: "600px" }}>
-      <h2>Loan Approval Prediction</h2>
+  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-2xl">
+      
 
-      <h4>Income Details</h4>
-      <input type="number" name="ApplicantIncome" placeholder="Applicant Income" onChange={handleChange} /><br /><br />
-      <input type="number" name="CoapplicantIncome" placeholder="Co-applicant Income" onChange={handleChange} /><br /><br />
-      <input type="number" name="LoanAmount" placeholder="Loan Amount" onChange={handleChange} /><br /><br />
+      <h2 className="text-3xl font-extrabold text-center text-indigo-700 mb-6">
+        Loan Approval Prediction
+      </h2>
 
-      <h4>Personal Details</h4>
+      {apiError && (
+        <div className="bg-red-100 text-red-700 p-3 rounded mb-4 font-semibold">
+          {apiError}
+        </div>
+      )}
 
-      <label>Gender:</label>
-      <select onChange={(e) => setFormData({ ...formData, Gender_Male: Number(e.target.value) })}>
-        <option value={1}>Male</option>
-        <option value={0}>Female</option>
-      </select><br /><br />
+      {/* Income Details */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-700 mb-3">
+          Income Details
+        </h3>
 
-      <label>Married:</label>
-      <select onChange={(e) => setFormData({ ...formData, Married_Yes: Number(e.target.value) })}>
-        <option value={1}>Yes</option>
-        <option value={0}>No</option>
-      </select><br /><br />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input
+            type="number"
+            name="ApplicantIncome"
+            placeholder="Applicant Income"
+            onChange={handleChange}
+            className="border rounded-lg p-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+          />
 
-      <label>Education:</label>
-      <select onChange={(e) => setFormData({ ...formData, Education_Not_Graduate: Number(e.target.value) })}>
-        <option value={0}>Graduate</option>
-        <option value={1}>Not Graduate</option>
-      </select><br /><br />
+          <input
+            type="number"
+            name="CoapplicantIncome"
+            placeholder="Co-applicant Income"
+            onChange={handleChange}
+            className="border rounded-lg p-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+          />
 
-      <label>Self Employed:</label>
-      <select onChange={(e) => setFormData({ ...formData, Self_Employed_Yes: Number(e.target.value) })}>
-        <option value={0}>No</option>
-        <option value={1}>Yes</option>
-      </select><br /><br />
+          <input
+            type="number"
+            name="LoanAmount"
+            placeholder="Loan Amount"
+            onChange={handleChange}
+            className="border rounded-lg p-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+          />
+        </div>
+      </div>
 
-      <label>Dependents:</label>
-      <select onChange={(e) => handleDependents(Number(e.target.value))}>
-        <option value={0}>0</option>
-        <option value={1}>1</option>
-        <option value={2}>2</option>
-        <option value={3}>3+</option>
-      </select><br /><br />
+      {/* Personal Details */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-700 mb-3">
+          Personal Details
+        </h3>
 
-      <label>Property Area:</label>
-      <select onChange={(e) => handleProperty(e.target.value)}>
-        <option value="Semiurban">Semi-Urban</option>
-        <option value="Urban">Urban</option>
-        <option value="Rural">Rural</option>
-      </select><br /><br />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-      <label>Credit History:</label>
-      <select onChange={(e) => setFormData({ ...formData, Credit_History: Number(e.target.value) })}>
-        <option value={1}>Good</option>
-        <option value={0}>Bad</option>
-      </select><br /><br />
+          <select
+            className="border rounded-lg p-2"
+            onChange={(e) => setFormData({ ...formData, Gender_Male: Number(e.target.value) })}
+          >
+            <option value={1}>Male</option>
+            <option value={0}>Female</option>
+          </select>
 
-      <button onClick={predictLoan}>Predict</button>
+          <select
+            className="border rounded-lg p-2"
+            onChange={(e) => setFormData({ ...formData, Married_Yes: Number(e.target.value) })}
+          >
+            <option value={1}>Married</option>
+            <option value={0}>Not Married</option>
+          </select>
+
+          <select
+            className="border rounded-lg p-2"
+            onChange={(e) => setFormData({ ...formData, Education_Not_Graduate: Number(e.target.value) })}
+          >
+            <option value={0}>Graduate</option>
+            <option value={1}>Not Graduate</option>
+          </select>
+
+          <select
+            className="border rounded-lg p-2"
+            onChange={(e) => setFormData({ ...formData, Self_Employed_Yes: Number(e.target.value) })}
+          >
+            <option value={0}>Salaried</option>
+            <option value={1}>Self Employed</option>
+          </select>
+
+          <select
+            className="border rounded-lg p-2"
+            onChange={(e) => handleDependents(Number(e.target.value))}
+          >
+            <option value={0}>0 Dependents</option>
+            <option value={1}>1 Dependent</option>
+            <option value={2}>2 Dependents</option>
+            <option value={3}>3+ Dependents</option>
+          </select>
+
+          <select
+            className="border rounded-lg p-2"
+            onChange={(e) => handleProperty(e.target.value)}
+          >
+            <option value="Semiurban">Semi-Urban</option>
+            <option value="Urban">Urban</option>
+            <option value="Rural">Rural</option>
+          </select>
+
+          <select
+            className="border rounded-lg p-2 md:col-span-2"
+            onChange={(e) => setFormData({ ...formData, Credit_History: Number(e.target.value) })}
+          >
+            <option value={1}>Good Credit History</option>
+            <option value={0}>Bad Credit History</option>
+          </select>
+        </div>
+      </div>
+
+      <button
+        onClick={predictLoan}
+        className="w-full bg-indigo-600 text-white text-lg font-bold py-3 rounded-xl hover:bg-indigo-700 transition"
+      >
+        Predict Loan Status
+      </button>
 
       {result && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Status: {result.loan_status}</h3>
-          <p>Approval Probability: {result.approval_probability}%</p>
+        <div className="mt-6 text-center bg-gray-50 p-4 rounded-xl">
+          <h3
+            className={`text-2xl font-bold ${
+              result.loan_status === "Approved"
+                ? "text-green-600"
+                : "text-red-600"
+            }`}
+          >
+            {result.loan_status}
+          </h3>
+
+          <p className="mt-2 text-gray-700">
+            Approval Probability:
+            <span className="font-semibold">
+              {" "}{result.approval_probability}%
+            </span>
+          </p>
         </div>
       )}
     </div>
-  );
+  </div>
+);
+
 }
 
 export default App;
