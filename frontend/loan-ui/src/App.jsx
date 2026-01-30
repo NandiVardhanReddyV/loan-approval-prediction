@@ -1,5 +1,6 @@
 import { useState } from "react";
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 function App() {
   const [formData, setFormData] = useState({
@@ -54,7 +55,8 @@ function App() {
   setResult(null);
 
   try {
-    const response = await fetch(`${API_URL}/api/predict/`,  {
+    const response = await fetch(
+      `${API_URL}/api/predict/`,  {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
