@@ -74,6 +74,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'loan_backend.wsgi.application'
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
